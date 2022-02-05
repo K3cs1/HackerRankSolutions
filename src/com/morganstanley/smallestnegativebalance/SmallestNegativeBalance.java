@@ -81,6 +81,7 @@ public class SmallestNegativeBalance {
 				debts[ row ][ column ] = scanner.next();
 			}
 		}
+		scanner.close();
 //		String[][] debts = new String[][]{
 //				{ "Alex", "Blake", "5" },
 //				{ "Blake", "Alex", "3" },
