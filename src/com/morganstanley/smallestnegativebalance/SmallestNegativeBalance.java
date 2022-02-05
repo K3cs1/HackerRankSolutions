@@ -1,8 +1,6 @@
 package com.morganstanley.smallestnegativebalance;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class SmallestNegativeBalance {
 
@@ -63,20 +61,10 @@ public class SmallestNegativeBalance {
 		resultPairs.entrySet().stream()
 				.sorted( Map.Entry.comparingByValue() )
 				.forEachOrdered( entry -> reverseOrderResultMap.put( entry.getKey(), entry.getValue() ) );
-		Map<Integer, Long> countResultValues = reverseOrderResultMap.values().stream()
-				.collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
-		long countDuplicates = 0L;
-		for ( Map.Entry<String, Integer> entry : reverseOrderResultMap.entrySet() ) {
-			if ( countResultValues.get( entry.getValue() ) > 1 ) {
-				countDuplicates = countResultValues.get( entry.getValue() );
-			}
-		}
+		int firstValue = reverseOrderResultMap.entrySet().stream().findFirst().get().getValue();
+		int countDuplicates = Collections.frequency( new ArrayList<>( reverseOrderResultMap.values() ), firstValue );
 		Iterator<String> resultMapIterator = reverseOrderResultMap.keySet().iterator();
 		List<String> resultNames = new ArrayList<>();
-		if ( countDuplicates == 0L ) {
-			resultNames.add( resultMapIterator.next() );
-			return resultNames.toArray( new String[ resultNames.size() ] );
-		}
 		for ( int i = 0; i < countDuplicates; i++ ) {
 			resultNames.add( resultMapIterator.next() );
 		}
@@ -84,28 +72,36 @@ public class SmallestNegativeBalance {
 	}
 
 	public static void main( String[] args ) {
-//		Scanner scanner = new Scanner( System.in );
-//		int numberOfTransactions = scanner.nextInt();
-//		int numberOfColumns = scanner.nextInt();
-//		String[][] debts = new String[ numberOfTransactions ][ numberOfColumns ];
-//		for ( int row = 0; row < numberOfTransactions; row++ ) {
-//			for ( int column = 0; column < numberOfColumns; column++ ) {
-//				debts[ row ][ column ] = scanner.next();
-//			}
-//		}
+		Scanner scanner = new Scanner( System.in );
+		int numberOfTransactions = scanner.nextInt();
+		int numberOfColumns = scanner.nextInt();
+		String[][] debts = new String[ numberOfTransactions ][ numberOfColumns ];
+		for ( int row = 0; row < numberOfTransactions; row++ ) {
+			for ( int column = 0; column < numberOfColumns; column++ ) {
+				debts[ row ][ column ] = scanner.next();
+			}
+		}
 //		String[][] debts = new String[][]{
 //				{ "Alex", "Blake", "5" },
 //				{ "Blake", "Alex", "3" },
 //				{ "Casey", "Alex", "7" },
 //				{ "Casey", "Alex", "4" },
 //				{ "Casey", "Alex", "2" } };
-		String[][] debts = new String[][]{
-				{ "Alex", "Blake", "2" },
-				{ "Blake", "Alex", "2" },
-				{ "Casey", "Alex", "5" },
-				{ "Blake", "Casey", "7" },
-				{ "Alex", "Blake", "4" },
-				{ "Alex", "Casey", "4" } };
+		// Alex: ( 3 + 7 + 4 + 2 ) - 5 = 11
+		// Blake: 5 - 3 =  2
+		// Casey: 0 - ( 7 + 4 + 2 ) = -13
+
+//		String[][] debts = new String[][]{
+//				{ "Alex", "Blake", "2" },
+//				{ "Blake", "Alex", "2" },
+//				{ "Casey", "Alex", "5" },
+//				{ "Blake", "Casey", "7" },
+//				{ "Alex", "Blake", "4" },
+//				{ "Alex", "Casey", "4" } };
+		// Alex: ( 2 + 5 ) - ( 2 + 4 + 4 ) = 7 - 10 = -3
+		// Blake: ( 2 + 4 ) - ( 2 + 7 ) = 6 - 9 =  -3
+		// Casey: ( 7  + 4 ) - 5 = 6
+
 		System.out.println( Arrays.toString( negativeBalance( debts ) ) );
 	}
 
