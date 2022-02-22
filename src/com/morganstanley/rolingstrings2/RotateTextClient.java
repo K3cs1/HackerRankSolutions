@@ -4,25 +4,27 @@ import java.util.List;
 
 public class RotateTextClient {
 
-	public static final char LEFT_CHAR = 'L';
+	private static int startIndex;
+	private static int endIndex;
+	private static final char LEFT_CHAR = 'L';
 
 	public static String rolingStrings( String inputString, List<String> operations ) {
 		char[] inputStringChars = inputString.toCharArray();
 		for ( String operation : operations ) {
-			String[] operationArr = operation.split( " " );
-			int startIndex = Integer.valueOf( operationArr[ 0 ] );
-			int endIndex = Integer.valueOf( operationArr[ 1 ] );
-			char rotateDirection = operationArr[ 2 ].toCharArray()[ 0 ];
+			boolean isLeft = isRotateDirectionLeft( operation );
 			InputText inputText = new InputText( inputStringChars, startIndex, endIndex );
 			TextFileOperationExecutor executor = new TextFileOperationExecutor();
-			if ( LEFT_CHAR == rotateDirection ) {
-				inputStringChars = executor.executeOperation( inputText::rotateLeft );
-			} else {
-				inputStringChars = executor.executeOperation( inputText::rotateRight );
-
-			}
+			inputStringChars = isLeft ? executor.executeOperation( inputText::rotateLeft ) : executor.executeOperation( inputText::rotateRight );
 		}
 		return new String( inputStringChars );
+	}
+
+	private static boolean isRotateDirectionLeft( String operation ) {
+		String[] operationArr = operation.split( " " );
+		startIndex = Integer.valueOf( operationArr[ 0 ] );
+		endIndex = Integer.valueOf( operationArr[ 1 ] );
+		char rotateDirection = operationArr[ 2 ].toCharArray()[ 0 ];
+		return LEFT_CHAR == rotateDirection;
 	}
 
 }
